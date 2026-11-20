@@ -700,7 +700,7 @@ const logout = async (req, res) => {
       )
 
       if (isMatch) {
-        // Révoquer uniquement le token correspondant
+        // invalider le token, retirer l'autorisation
         await userModel.revokeRefreshTokenById(
           savedToken.id
         )

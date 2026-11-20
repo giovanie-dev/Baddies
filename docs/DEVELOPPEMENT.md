@@ -29,9 +29,8 @@ Pour afficher Swagger UI localement, définir `ENABLE_API_DOCS=true` dans `.env`
 - `http://localhost:3001/api-docs/` : documentation Swagger UI ;
 - `http://localhost:3001/openapi.json` : contrat JSON.
 
-Les deux routes restent absentes tant que la variable n'est pas exactement `true`. Les boutons d'exécution des requêtes sont désactivés pour éviter les modifications de comptes ou d'historiques depuis la documentation. Aucun jeton n'est persisté dans Swagger UI. Aucune activation sur Render n'est nécessaire pour lire le contrat localement.
+Les deux routes restent absentes tant que la variable n'est pas exactement `true`. Les boutons d'exécution des requêtes sont désactivés pour éviter les modifications de comptes depuis la documentation. Aucun jeton n'est persisté dans Swagger UI. Aucune activation sur Render n'est nécessaire pour lire le contrat localement.
 
-Les schémas `evaluation` et `solutions` restent volontairement ouverts : le backend actuel vérifie leur présence mais ne leur applique pas de schéma métier détaillé. OpenAPI ne renforce pas à lui seul la validation du serveur.
 
 ## JSDoc
 

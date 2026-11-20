@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "test": "node --test",
-    "test:unit": "node --test test/unit/*.test.js test/resetTiming.test.js test/authSchemas.test.js test/validateMiddleware.test.js",
-    "test:coverage:unit": "node --test --experimental-test-coverage test/unit/*.test.js test/resetTiming.test.js test/authSchemas.test.js test/validateMiddleware.test.js",
+    "test:unit": "node --test test/unit/*.test.js test/authSchemas.test.js test/validateMiddleware.test.js test/mailSender.test.js",
+    "test:coverage:unit": "node --test --experimental-test-coverage --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 test/unit/*.test.js test/authSchemas.test.js test/validateMiddleware.test.js test/mailSender.test.js",
     "docs:jsdoc": "jsdoc -c jsdoc.json",
     "docs:validate": "node scripts/validate-openapi.js"
   },

@@ -1,6 +1,6 @@
 # BADDIES  backend
 
-API REST du projet BADDIES, utilisée par le frontend pour l’authentification, la gestion du profil et l’historique des évaluations des douleurs menstruelles.
+API REST du projet BADDIES, utilisée par le frontend pour l’authentification et la gestion du profil.
 
 - [Frontend en ligne](https://baddies-beryl.vercel.app)
 - [API hébergée sur Render](https://baddies-api.onrender.com)
@@ -11,7 +11,7 @@ API REST du projet BADDIES, utilisée par le frontend pour l’authentification,
 
 Node.js, Express 5, PostgreSQL avec `pg`, JWT, bcrypt, validation Zod, Helmet, CORS et limitation de débit avec express-rate-limit. Les emails de réinitialisation sont envoyés via Brevo.
 
-L’API gère l’inscription, la connexion, les jetons d’accès et leur renouvellement, la déconnexion, la récupération du mot de passe, la modification du profil et les opérations sur l’historique du compte. Les requêtes SQL utilisent des paramètres ; les routes privées vérifient le jeton et les historiques sont filtrés par utilisateur.
+L’API gère l’inscription, la connexion, les jetons d’accès et leur renouvellement, la déconnexion, la récupération du mot de passe, la modification du profil et la suppression du compte. Les requêtes SQL utilisent des paramètres ; les routes privées vérifient le jeton du compte.
 
 ## Installation
 
@@ -49,7 +49,7 @@ Ne jamais publier les valeurs réelles. `.env` est ignoré par Git. `DATABASE_UR
 
 Le dépôt ne contient actuellement ni migration SQL ni script de création du schéma. Lancer le serveur ne crée pas les tables. Il faut provisionner un schéma compatible avec les modèles avant d’utiliser les fonctions de compte.
 
-Les modèles utilisent les tables sensibles à la casse `"Users"`, `"History"`, `"Password_reset_tokens"` et `"Refresh_tokens"`. Le détail des colonnes et des requêtes se trouve dans `models/userModel.js` et `models/historyModel.js`. Obtenir le schéma de référence du projet plutôt que recréer une base de production approximative.
+Les modèles utilisent les tables sensibles à la casse `"Users"`, `"Password_reset_tokens"` et `"Refresh_tokens"`. Le détail des colonnes et des requêtes se trouve dans `models/userModel.js`. Obtenir le schéma de référence du projet plutôt que recréer une base de production approximative.
 
 ## Démarrer le serveur
 
@@ -72,11 +72,6 @@ L’API locale écoute par défaut sur `http://localhost:3001`. Le frontend est 
 | POST | `/api/v1/auth/forgotPassword` | Demande de réinitialisation par email. |
 | POST | `/api/v1/auth/resetPassword` | Réinitialisation : token, newPassword. |
 | PATCH | `/api/v1/user/profile` | Profil ; jeton d’accès requis. |
-| POST | `/api/v1/history` | Enregistrement d’un historique ; jeton requis. |
-| GET | `/api/v1/history` | Historiques du compte ; jeton requis. |
-| GET | `/api/v1/history/:id` | Historique appartenant au compte ; jeton requis. |
-| DELETE | `/api/v1/history/:id` | Suppression d’un historique du compte ; jeton requis. |
-| POST | `/api/v1/import` | Importation de l'historique locale au compte; jeton requis |
 
 Les corps des requêtes sont envoyés en JSON avec `Content-Type: application/json`. Les routes protégées attendent `Authorization: Bearer <accessToken>`. Les formats et validations détaillés sont définis dans `schemas/`, `controllers/` et `middlewares/`.
 
@@ -139,7 +134,7 @@ La fréquence, les alertes et l’historique des incidents se règlent dans Upti
 npm test
 ```
 
-La commande utilise `node --test` malgré la présence de Jest dans les dépendances de développement. Plusieurs tests créent et suppriment des utilisateurs, historiques et tokens : les exécuter uniquement avec une **base de test dédiée**, jamais avec la base de production. Fournir un `JWT_SECRET` de test et la configuration nécessaire aux modules chargés ; éviter tout envoi réel d’email.
+La commande utilise `node --test` malgré la présence de Jest dans les dépendances de développement. Plusieurs tests créent et suppriment des utilisateurs et tokens : les exécuter uniquement avec une **base de test dédiée**, jamais avec la base de production. Fournir un `JWT_SECRET` de test et la configuration nécessaire aux modules chargés ; éviter tout envoi réel d’email.
 
 Pour les seules validations et le middleware de validation :
 
@@ -155,3 +150,10 @@ node --test test/authSchemas.test.js test/validateMiddleware.test.js
 
 # Auteur
 Giovanie ANDRIANIRINA
+## Périmètre des données
+
+Le backend gère uniquement les comptes, profils, mots de passe et sessions.
+L’historique (dates, évaluations et solutions) reste dans IndexedDB côté navigateur.
+Aucune route `/api/v1/history` n’est exposée. La connexion ne déclenche aucun transfert.
+
+Voir `docs/HISTORIQUE_LOCAL.md` pour le déploiement et le traitement des anciens enregistrements.

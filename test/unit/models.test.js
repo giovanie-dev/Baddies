@@ -3,7 +3,6 @@ const assert = require('node:assert/strict')
 
 const { pool } = require('../../config/db')
 const userModel = require('../../models/userModel')
-const historyModel = require('../../models/historyModel')
 
 test('findByEmail : renvoie le compte trouvé', async t => {
   const compte = {
@@ -31,55 +30,6 @@ test('findByEmail : renvoie null si aucun compte ne correspond', async t => {
   const resultat = await userModel.findByEmail('inconnu@example.com')
 
   assert.equal(resultat, null)
-})
-
-test('getHistoryById : utilise l’identifiant de l’épisode et du compte', async t => {
-  const episode = { id: 'episode-test', user_id: 7 }
-
-  t.mock.method(pool, 'query', async (sql, params) => {
-    assert.deepEqual(params, ['episode-test', 7])
-
-    // Vérifier que la requête filtre aussi par utilisateur.
-    assert.match(sql, /user_id\s*=\s*\$2/)
-
-    return { rows: [episode] }
-  })
-
-  const resultat = await historyModel.getHistoryById('episode-test', 7)
-
-  assert.deepEqual(resultat, episode)
-})
-
-test('getHistoryById : renvoie null si aucun épisode ne correspond', async t => {
-  t.mock.method(pool, 'query', async () => {
-    return { rows: [] }
-  })
-
-  const resultat = await historyModel.getHistoryById('episode-inconnu', 7)
-
-  assert.equal(resultat, null)
-})
-
-test('deleteHistory : indique si une ligne a été supprimée', async t => {
-  t.mock.method(pool, 'query', async (sql, params) => {
-    assert.deepEqual(params, ['episode-test', 7])
-
-    return { rowCount: 1 }
-  })
-
-  const resultat = await historyModel.deleteHistory('episode-test', 7)
-
-  assert.equal(resultat, true)
-})
-
-test('deleteHistory : renvoie false si aucune ligne n’a été supprimée', async t => {
-  t.mock.method(pool, 'query', async () => {
-    return { rowCount: 0 }
-  })
-
-  const resultat = await historyModel.deleteHistory('episode-inconnu', 7)
-
-  assert.equal(resultat, false)
 })
 
 test('rotateRefreshToken : valide la transaction et libère la connexion', async t => {
